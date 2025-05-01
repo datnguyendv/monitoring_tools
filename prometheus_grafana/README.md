@@ -41,7 +41,7 @@ Includes:
 #### Install Thanos Query in `thanos` Namespace
 
 ```bash
-helm install thanos bitnami/thanos --namespace thanos -f values-thanos-query.yaml
+helm install thanos bitnami/thanos --version=16.0.4 --namespace thanos -f values-thanos-query.yaml
 ```
 
 This allows reading data from multiple clusters.

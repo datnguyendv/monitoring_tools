@@ -1,0 +1,21 @@
+query:
+  enabled: true
+  replicaCount: 1
+
+  # Add all sidecar endpoints from other clusters
+  stores:
+    - prometheus-operated.monitoring.svc.cluster.local:10901
+
+  grpcServer:
+    service:
+      type: ClusterIP
+
+  httpServer:
+    service:
+      type: ClusterIP
+
+serviceAccount:
+  create: true
+
+networkPolicy:
+  enabled: false
