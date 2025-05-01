@@ -1,0 +1,33 @@
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+
+    retention: 2d
+
+    externalLabels:
+      cluster: book
+
+    thanos:
+      image: quay.io/thanos/thanos:v0.38.0
+      #
+      # Enable if use bucket
+      # objectStorageConfig:
+      #   name: thanos-objstore-config
+      #   key: objstore.yml
+      grpcServerTlsConfig: {}   # nếu không dùng TLS
+
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 2Gi
+
+grafana:
+  enabled: true  # false if install in monitored cluster
+  adminPassword: "admin"
+  service:
+    type: NodePort  # Or LoadBalancer if need to expose to internet
