@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  mongo-exporter:
+    image: percona/mongodb_exporter:0.40.0
+    container_name: mongo-exporter
+    restart: always
+    ports:
+      - "9216:9216"  # 9216 là port mặc định expose metrics
+    command:
+      - "--mongodb.uri=mongodb://exporter:exporterpass@10.148.0.17:27017"
+      - "--collect-all"
+      - "--compatible-mode"
+    networks:
+      - monitoring-net
+
+networks:
+  monitoring-net:
+    external: true
