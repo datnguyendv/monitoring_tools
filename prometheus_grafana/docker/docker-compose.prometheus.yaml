@@ -14,6 +14,8 @@ services:
       - "--web.enable-lifecycle"
     ports:
       - "9092:9090"
+    networks:
+      - monitoring-net
 
 networks:
   monitoring-net:
