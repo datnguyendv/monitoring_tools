@@ -6,7 +6,7 @@ services:
     container_name: prometheus
     restart: always
     volumes:
-      - ./prometheus:/etc/prometheus
+      - ./config:/etc/prometheus
       - prometheus_data:/prometheus
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
