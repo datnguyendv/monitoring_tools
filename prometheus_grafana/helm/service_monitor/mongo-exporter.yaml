@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: mongodb-exporter
+  labels:
+    release: monitoring # name of release of prometheus
+spec:
+  selector:
+    matchLabels:
+      app: mongodb-exporter
+  endpoints:
+    - port: metrics
+      interval: 5s
+      relabelings:
+        - targetLabel: hostname
+          replacement: localhost
+  namespaceSelector:
+    matchNames:
+      - mongodb
