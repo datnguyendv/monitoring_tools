@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   thanos-sidecar:
     image: quay.io/thanos/thanos:v0.38.0

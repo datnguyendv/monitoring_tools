@@ -9,7 +9,7 @@ services:
       - ./config:/etc/prometheus
       - prometheus_data:/prometheus
     command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--config.file=/etc/prometheus/prometheus.yaml"
       - "--storage.tsdb.path=/prometheus"
       - "--web.enable-lifecycle"
     ports:
@@ -23,4 +23,3 @@ networks:
 
 volumes:
   prometheus_data:
-    external: true
