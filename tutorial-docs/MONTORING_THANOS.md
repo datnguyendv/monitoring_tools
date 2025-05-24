@@ -28,20 +28,20 @@ This guide walks you through installing monitoring tools for a multi-cluster env
 #### Install Monitoring Tools in `monitoring` Namespace
 
 ```bash
-helm install monitoring prometheus-community/kube-prometheus-stack --version=3.12.0 -n monitoring -f prom_grafana-values.yaml
+helm install monitoring prometheus-community/kube-prometheus-stack --version=3.12.0 -n monitoring -f scrape-prometheus-thanos/helm/kube-prometheus-stack.yaml
 ```
 
 Includes:
 
 - Grafana
 - Prometheus
+- Prometheus Operator
 - Thanos Sidecar
-- Alert Manager
 
 #### Install Thanos Query in `thanos` Namespace
 
 ```bash
-helm install thanos bitnami/thanos --version=16.0.4 --namespace thanos -f values-thanos-query.yaml
+helm install thanos bitnami/thanos --version=16.0.4 --namespace thanos -f scrape-prometheus-thanos/helm/thanos-query.yaml
 ```
 
 This allows reading data from multiple clusters.
@@ -72,24 +72,25 @@ Use Helm (e.g., Bitnami's MongoDB chart includes exporter by default).
 #### Deploy MongoDB Exporter in `exporter` Namespace
 
 ```bash
-kubectl -n exporter apply -f k8s/mongo-exporter/deployment.yaml
-kubectl -n exporter apply -f k8s/mongo-exporter/service.yaml
+kubectl -n exporter apply -f metrics-exporter/mongodb/k8s/deployment.yaml
+kubectl -n exporter apply -f metrics-exporter/mongodb/k8s/service.yaml
 ```
 
 #### Install Monitoring Stack in `monitoring` Namespace
 
 ```bash
-helm install monitoring prometheus-community/kube-prometheus-stack -n monitoring -f values-book.yaml
+helm install monitoring prometheus-community/kube-prometheus-stack --version=3.12.0 -n monitoring -f scrape-prometheus-thanos/helm/kube-prometheus-stack.yaml
 ```
 
 #### Expose Thanos Sidecar
 
 ```bash
-kubectl -n monitoring apply -f thanos-sidecar-ingress.yaml
+kubectl -n monitoring apply -f scrape-prometheus-thanos/helm/thanos-sidecar-ingress.yaml
 ```
 
 #### Apply ServiceMonitor
 
+ServiceMonitor is custom CRD of prometheus operator. When apply ServiceMonitor, prometheus will scrape resource automaticaly.
 Ensure `namespaceSelector.matchNames` includes:
 
 ```yaml
@@ -101,7 +102,7 @@ namespaceSelector:
 Apply ServiceMonitor:
 
 ```bash
-kubectl -n monitoring apply -f service-monitor/mongo-exporter.yaml
+kubectl -n monitoring apply -f scrape-prometheus-thanos/helm/service-monitor/mongo-exporter.yaml
 ```
 
 Note: ServiceMonitor need to install in the same namespace with prometheus

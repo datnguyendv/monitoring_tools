@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb-exporter
+  labels:
+    app: mongodb-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb-exporter
+  template:
+    metadata:
+      labels:
+        app: mongodb-exporter
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '9216'
+    spec:
+      containers:
+        - name: mongodb-exporter
+          image: percona/mongodb_exporter:0.40.0
+          ports:
+            - name: metrics
+              containerPort: 9216
+          args:
+            - "--collect-all"
+            - "--compatible-mode" #use old metrics name
+          env:
+            - name: MONGODB_URI
+              value: "mongodb://exporter:exporterpass@mongodb.mongodb.svc.cluster.local:27017/admin"
