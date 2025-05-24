@@ -1,0 +1,23 @@
+services:
+  thanos-sidecar:
+    image: quay.io/thanos/thanos:v0.38.0
+    container_name: thanos-sidecar
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+    command:
+      - sidecar
+      - --tsdb.path=/prometheus
+      - --prometheus.url=http://prometheus:9090
+      - --grpc-address=0.0.0.0:10901
+      - --http-address=0.0.0.0:10902
+    restart: always
+    ports:
+      - "10901:10901"  # gRPC
+      - "10902:10902"  # HTTP
+    networks:
+      - monitoring-net
+
+networks:
+  monitoring-net:
+    external: true
