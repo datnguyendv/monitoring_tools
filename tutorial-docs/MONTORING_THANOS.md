@@ -117,6 +117,6 @@ helm upgrade thanos bitnami/thanos -n thanos -f thanos/helm/thanos-query.yaml
 
 ---
 
-Bonus: If you want to setup monitoring in vm instance(ec2, gce,...), install all docker file in scrape-prometheus/docker. Then, back to step Update Thanos Query endpoints
+Bonus: If you want to setup monitoring in vm instance(ec2, gce,...) => read PROMETHEUS_THANOS_DOCKER.md
 
 _End of guide._
