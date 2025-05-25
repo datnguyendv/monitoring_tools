@@ -27,18 +27,34 @@ This guide walks you through installing monitoring tools for a multi-cluster env
 
 #### Install Monitoring Tools in `monitoring` Namespace
 
+Setup `storage_config` for longterm storage (optional):
+
+```bash
+kubectl create secret generic thanos-objstore-config --from-file=objstore.yml=./scrape-prometheus/storage_config/gcs.yaml -n monitoring
+```
+
+Note: change config storage in `kube-prometheus-stack.yaml` if do not setup `storage_config`
+
 ```bash
 helm install monitoring prometheus-community/kube-prometheus-stack --version=3.12.0 -n monitoring -f scrape-prometheus/helm/kube-prometheus-stack.yaml
 ```
 
-Includes:
+Setup `grafana`:
+
+You can enable `kube-prometheus-stack.yaml` or using value in `visualization-grafana` folder
+
+```bash
+helm install grafana grafana/grafana -n monitoring -f visualization-grafana/helm/value.yaml
+```
+
+After install, we have service below:
 
 - Grafana
 - Prometheus
 - Prometheus Operator
 - Thanos Sidecar
 
-#### Install Thanos Query in `thanos` Namespace
+#### Install Thanos Query in `monitoring` Namespace
 
 ```bash
 helm install thanos bitnami/thanos --version=16.0.4 --namespace thanos -f thanos/helm/thanos-query.yaml
@@ -54,7 +70,6 @@ This allows reading data from multiple clusters.
 
 - `monitoring`
 - `mongodb`
-- `exporter`
 
 #### Deploy MongoDB in `mongodb` Namespace
 
@@ -85,8 +100,8 @@ Use Helm (e.g., Bitnami's MongoDB chart includes exporter by default).
 #### Deploy MongoDB Exporter in `exporter` Namespace
 
 ```bash
-kubectl -n exporter apply -f metrics-exporter/mongodb/k8s/deployment.yaml
-kubectl -n exporter apply -f metrics-exporter/mongodb/k8s/service.yaml
+kubectl -n mongodb apply -f metrics-exporter/mongodb/k8s/deployment.yaml
+kubectl -n mongodb apply -f metrics-exporter/mongodb/k8s/service.yaml
 ```
 
 #### Install Monitoring Stack in `monitoring` Namespace

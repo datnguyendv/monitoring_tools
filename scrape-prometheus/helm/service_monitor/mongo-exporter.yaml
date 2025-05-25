@@ -16,4 +16,4 @@ spec:
           replacement: localhost
   namespaceSelector:
     matchNames:
-      - mongodb
+      - mongodb # namespace of mongodb exporter deployment
