@@ -13,9 +13,11 @@ prometheus:
       image: quay.io/thanos/thanos:v0.38.0
       #
       # Enable if use bucket
-      # objectStorageConfig:
-      #   name: thanos-objstore-config
-      #   key: objstore.yml
+      objectStorageConfig:
+        existingSecret:
+          name: thanos-objstore-config
+          key: objstore.yml
+
       grpcServerTlsConfig: {}   # nếu không dùng TLS
 
     storageSpec:
@@ -30,7 +32,7 @@ alertmanager:
   enabled: false
 
 grafana:
-  enabled: true  # false if install in monitored cluster
+  enabled: false  # false if install in monitored cluster
   adminPassword: "admin"
   service:
     type: NodePort  # Or LoadBalancer if need to expose to internet

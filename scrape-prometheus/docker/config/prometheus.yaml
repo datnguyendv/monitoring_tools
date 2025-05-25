@@ -3,7 +3,7 @@ global:
   scrape_timeout: 10s
   evaluation_interval: 1m
   external_labels:
-    host: gce-personal
+    cluster: docker
     prometheus: prometheus-docker
 
 scrape_configs:

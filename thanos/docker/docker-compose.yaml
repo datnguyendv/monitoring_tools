@@ -5,9 +5,11 @@ services:
     volumes:
       - ./prometheus:/etc/prometheus
       - prometheus_data:/prometheus
+      - ./objstore.yml:/etc/thanos/objstore.yml
     command:
       - sidecar
       - --tsdb.path=/prometheus
+      - --objstore.config-file=/etc/thanos/objstore.yml
       - --prometheus.url=http://prometheus:9090
       - --grpc-address=0.0.0.0:10901
       - --http-address=0.0.0.0:10902

@@ -65,6 +65,19 @@ kubectl -n mongodb create deployment mongodb --image=mongodb/mongodb-comunity-se
 kubectl -n mongodb expose deployment mongodb --port=27017 --target-port=27017
 ```
 
+create user for exporter monitoring
+
+```bash
+db.createUser({
+  user: "exporter",
+  pwd: "exporterpass",
+  roles: [
+    { role: "clusterMonitor", db: "admin" },           // required for serverStatus
+    { role: "readAnyDatabase", db: "admin" }
+  ]
+})
+```
+
 ##### For AMD
 
 Use Helm (e.g., Bitnami's MongoDB chart includes exporter by default).
@@ -102,7 +115,7 @@ namespaceSelector:
 Apply ServiceMonitor:
 
 ```bash
-kubectl -n monitoring apply -f scrape-prometheus/helm/service-monitor/mongo-exporter.yaml
+kubectl -n monitoring apply -f scrape-prometheus/helm/service_monitor/mongo-exporter.yaml
 ```
 
 Note: ServiceMonitor need to install in the same namespace with prometheus
