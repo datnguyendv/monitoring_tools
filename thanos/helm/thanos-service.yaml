@@ -4,15 +4,17 @@ serviceAccount:
 networkPolicy:
   enabled: false
 
+existingObjstoreSecret: thanos-objstore-config
+existingObjstoreSecretItems:
+  - key: objstore.yml
+    path: objstore.yml
+
 query:
   enabled: true
   replicaLabel: cluster
   stores:
     - prometheus-operated.monitoring.svc.cluster.local:10901
-
-  storeEndpoints:
-    - dnssrv+_grpc._tcp.prometheus-operated.monitoring.svc.cluster.local
-    - dnssrv+_grpc._tcp.thanos-storegateway.monitoring.svc.cluster.local
+    - thanos-storegateway.monitoring.svc.cluster.local:10901
 
   grpcServer:
     service:
@@ -24,11 +26,6 @@ query:
 
 storegateway:
   enabled: true
-
-  existingObjstoreSecret: thanos-objstore-config
-  existingObjstoreSecretItems:
-    - key: objstore.yml
-      path: objstore.yml
   resources:
     requests:
       cpu: 300m
@@ -39,12 +36,6 @@ storegateway:
 
 compactor:
   enabled: true
-
-  existingObjstoreSecret: thanos-objstore-config
-  existingObjstoreSecretItems:
-    - key: objstore.yml
-      path: objstore.yml
-
   retention:
     resolutionRaw: 5d
     resolution5m: 30d
