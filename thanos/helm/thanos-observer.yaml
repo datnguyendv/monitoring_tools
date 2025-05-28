@@ -4,17 +4,25 @@ serviceAccount:
 networkPolicy:
   enabled: false
 
-existingObjstoreSecret: thanos-objstore-config
-existingObjstoreSecretItems:
-  - key: objstore.yml
-    path: objstore.yml
+# existingObjstoreSecret: thanos-objstore-config
+# existingObjstoreSecretItems:
+#   - key: objstore.yml
+#     path: objstore.yml
 
 query:
   enabled: true
   replicaLabel: cluster
-  stores:
-    - prometheus-operated.monitoring.svc.cluster.local:10901
-    - thanos-storegateway.monitoring.svc.cluster.local:10901
+  stores: []
+  sdConfig: |
+    - provider: "consul"
+      consul:
+        server: "http://consul.consul.svc:8500"
+        tagSeparator: ","
+        refreshInterval: "30s"
+        allowStale: true
+        services: []
+  extraArgs:
+    store.sd-files: /etc/thanos/servicediscovery.yml
 
   grpcServer:
     service:
@@ -25,7 +33,7 @@ query:
       type: ClusterIP
 
 storegateway:
-  enabled: true
+  enabled: false
   resources:
     requests:
       cpu: 300m
@@ -35,7 +43,7 @@ storegateway:
       memory: 2Gi
 
 compactor:
-  enabled: true
+  enabled: false
   retention:
     resolutionRaw: 5d
     resolution5m: 30d
