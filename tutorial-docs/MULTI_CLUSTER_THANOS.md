@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide walks you through installing monitoring tools for a multi-cluster environment using Prometheus, Grafana, and Thanos, with an example setup across two clusters: `Obserbility` and `Database`.
+This guide walks you through installing monitoring tools for a multi-cluster environment using Prometheus, Grafana, and Thanos, with an example setup across two clusters: `Observer` and `Dev`.
 
 ---
 
@@ -18,7 +18,7 @@ This guide walks you through installing monitoring tools for a multi-cluster env
 
 ## How to setup
 
-### Cluster: Obserbility
+### Cluster: Obserbility(Central Cluster)
 
 #### Create Namespaces
 
@@ -36,7 +36,7 @@ kubectl create secret generic thanos-objstore-config --from-file=objstore.yml=./
 Note: change config storage in `kube-prometheus-stack.yaml` if do not setup `storage_config`
 
 ```bash
-helm install monitoring prometheus-community/kube-prometheus-stack --version=3.12.0 -n monitoring -f scrape-prometheus/helm/kube-prometheus-stack.yaml
+helm install monitoring prometheus-community/kube-prometheus-stack --version=3.12.0 -n monitoring -f scrape-prometheus/helm/kube-prometheus-stack-observer.yaml
 ```
 
 Setup `grafana`:
@@ -57,19 +57,19 @@ After install, we have service below:
 #### Install Thanos Query in `monitoring` Namespace
 
 ```bash
-helm install thanos bitnami/thanos --version=16.0.4 --namespace thanos -f thanos/helm/thanos-query.yaml
+helm install thanos bitnami/thanos --version=16.0.4 --namespace thanos -f thanos/helm/thanos-query-observer.yaml
 ```
 
 This allows reading data from multiple clusters.
 
 ---
 
-### Cluster: Database (Monitored Cluster)
+### Cluster: Dev
 
 #### Create Namespaces
 
 - `monitoring`
-- `mongodb`
+- `mongodb`(for test metrics and `service monitor`)
 
 #### Deploy MongoDB in `mongodb` Namespace
 
@@ -107,7 +107,7 @@ kubectl -n mongodb apply -f metrics-exporter/mongodb/k8s/service.yaml
 #### Install Monitoring Stack in `monitoring` Namespace
 
 ```bash
-helm install monitoring prometheus-community/kube-prometheus-stack --version=3.12.0 -n monitoring -f scrape-prometheus/helm/kube-prometheus-stack.yaml
+helm install monitoring prometheus-community/kube-prometheus-stack --version=3.12.0 -n monitoring -f scrape-prometheus/helm/kube-prometheus-stack-dev.yaml
 ```
 
 #### Expose Thanos Sidecar
@@ -137,7 +137,7 @@ Note: ServiceMonitor need to install in the same namespace with prometheus
 
 ### Back to Obserbility Cluster
 
-Update Thanos Query endpoints with new sidecar info from the Database cluster, then redeploy:
+Update Thanos Query endpoints with ingress domain info from the Dev cluster, then redeploy:
 
 ```bash
 helm upgrade thanos bitnami/thanos -n thanos -f thanos/helm/thanos-query.yaml
