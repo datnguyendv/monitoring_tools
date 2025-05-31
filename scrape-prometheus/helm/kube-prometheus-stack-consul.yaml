@@ -7,7 +7,7 @@ prometheus:
     retention: 2d
 
     externalLabels:
-      cluster: dev
+      cluster: obserbility
 
     thanos:
       image: quay.io/thanos/thanos:v0.38.0

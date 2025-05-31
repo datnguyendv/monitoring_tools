@@ -2,9 +2,10 @@
   "ID": "hostname:port",
   "Name": "service name",
   "Address": "hostname.service.IP",
-  "Port": servicePort,
+  "Port": "servicePort",
   "Meta": {
     "hostname": "hostname",
+    "cluster": "cluster_name",
     "prometheus": "true"
   },
   "Check": {

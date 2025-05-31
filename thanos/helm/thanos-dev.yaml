@@ -1,0 +1,87 @@
+serviceAccount:
+  create: true
+
+networkPolicy:
+  enabled: false
+
+# existingObjstoreSecret: thanos-objstore-config
+# existingObjstoreSecretItems:
+#   - key: objstore.yml
+#     path: objstore.yml
+
+query:
+  enabled: true
+  replicaLabel: cluster
+  # stores:
+    # - prometheus-operated.observer.svc.cluster.local:10901
+    # - prometheus-operated.monitoring.svc.cluster.local:10901
+    # - thanos-storegateway.monitoring.svc.cluster.local:10901
+
+  extraFlags:
+    - --store.sd-files=/etc/thanos/sd/thanos-sd-file.yaml
+
+  sidecars:
+    - name: consul-template
+      image: hashicorp/consul-template
+      imagePullPolicy: IfNotPresent
+      args: 
+        - consul-template
+        - -config 
+        - /consul-template/config.d/config.hcl
+      volumeMounts:
+        - name: consul-template-hcl-config
+          mountPath: /consul-template/config.d
+        - name: consul-template-config
+          mountPath: /consul-template/templates
+        - name: thanos-sd-dir
+          mountPath: /etc/thanos/sd
+
+  extraVolumes:
+    - name: consul-template-hcl-config
+      configMap:
+        name: consul-template-hcl-config-map
+    - name: consul-template-config
+      configMap:
+        name: consul-template-config-map
+    - name: thanos-sd-dir
+      emptyDir: {}
+
+  extraVolumeMounts:
+    - name: thanos-sd-dir
+      mountPath: /etc/thanos/sd
+
+  grpcServer:
+    service:
+      type: ClusterIP
+
+  httpServer:
+    service:
+      type: ClusterIP
+
+queryFrontend:
+  enabled: false
+
+storegateway:
+  enabled: false
+  resources:
+    requests:
+      cpu: 300m
+      memory: 1Gi
+    limits:
+      cpu: 600m
+      memory: 2Gi
+
+compactor:
+  enabled: false
+  retention:
+    resolutionRaw: 5d
+    resolution5m: 30d
+    resolution1h: 90d
+
+  resources:
+    requests:
+      cpu: 300m
+      memory: 1Gi
+    limits:
+      cpu: 600m
+      memory: 2Gi
