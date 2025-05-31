@@ -1,8 +1,0 @@
-type: S3
-config:
-  bucket: "thanos"                     # tên bucket bạn đã tạo
-  endpoint: "minio.monitoring.svc:9000"  # host:port MinIO, hoặc domain/IP nếu ngoài cụm
-  access_key: "minioadmin"            # access key MinIO
-  secret_key: "minioadmin"            # secret key MinIO
-  insecure: true                      # bắt buộc nếu bạn không bật TLS cho MinIO
-  signature_version2: false 
