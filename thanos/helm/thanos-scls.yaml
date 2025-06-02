@@ -1,0 +1,53 @@
+serviceAccount:
+  create: true
+
+networkPolicy:
+  enabled: false
+
+existingObjstoreSecret: thanos-objstore-config
+existingObjstoreSecretItems:
+  - key: objstore.yml
+    path: objstore.yml
+
+query:
+  enabled: true
+  replicaLabel: cluster
+  stores:
+    - prometheus-operated.singapore.svc.cluster.local:10901
+    - thanos-storegateway.singapore.svc.cluster.local:10901
+
+  grpcServer:
+    service:
+      type: ClusterIP
+
+  httpServer:
+    service:
+      type: ClusterIP
+
+queryFrontend:
+  enabled: true
+
+storegateway:
+  enabled: true
+  resources:
+    requests:
+      cpu: 300m
+      memory: 1Gi
+    limits:
+      cpu: 600m
+      memory: 2Gi
+
+compactor:
+  enabled: true
+  retention:
+    resolutionRaw: 5d
+    resolution5m: 30d
+    resolution1h: 90d
+
+  resources:
+    requests:
+      cpu: 300m
+      memory: 1Gi
+    limits:
+      cpu: 600m
+      memory: 2Gi
