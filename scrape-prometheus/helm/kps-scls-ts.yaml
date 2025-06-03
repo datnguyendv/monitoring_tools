@@ -1,0 +1,32 @@
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+
+    retention: 2d
+
+    externalLabels:
+      cluster: dev
+
+    thanos:
+      image: quay.io/thanos/thanos:v0.38.0
+      #
+      # Enable if use bucket
+      objectStorageConfig:
+        existingSecret:
+          name: thanos-objstore-config
+          key: objstore.yml
+
+      grpcServerTlsConfig: {}   # nếu không dùng TLS
+
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 2Gi
+
+alertmanager:
+  enabled: false
