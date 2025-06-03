@@ -13,8 +13,9 @@ query:
   enabled: true
   replicaLabel: cluster
   stores:
-    - prometheus-operated.monitoring.svc.cluster.local:10901
-    - thanos-storegateway.monitoring.svc.cluster.local:10901
+    - prometheus-operated.observability.svc.cluster.local:10901
+    - thanos-storegateway.observability.svc.cluster.local:10901
+    - thanos-query.observability.svc.cluster.local:10901
 
   grpcServer:
     service:
