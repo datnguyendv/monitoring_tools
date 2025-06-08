@@ -1,0 +1,15 @@
+{
+  "ID": "thanos-query-dev:10901",
+  "Name": "thanos-query",
+  "Address": "10.244.0.14",
+  "Port": 10901,
+  "Meta": {
+    "prometheus": "true",
+    "cluster": "dev"
+  },
+  "Check": {
+    "http": "http://10.244.0.14:9090/-/ready",
+    "interval": "10s",
+    "timeout": "5s"
+  }
+}
