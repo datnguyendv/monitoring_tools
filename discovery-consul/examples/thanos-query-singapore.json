@@ -1,7 +1,7 @@
 {
-  "ID": "prometheus-observer-dev:10901",
-  "Name": "prometheus",
-  "Address": "10.244.0.9",
+  "ID": "thanos-query-singapore-dev:10901",
+  "Name": "thanos-query",
+  "Address": "10.103.70.126",
   "Port": 10901,
   "Meta": {
     "prometheus": "true",
@@ -9,7 +9,7 @@
     "environment": "dev"
   },
   "Check": {
-    "http": "http://10.244.0.9:9090/-/ready",
+    "http": "http://10.104.202.162:9090/-/ready",
     "interval": "10s",
     "timeout": "5s"
   }
