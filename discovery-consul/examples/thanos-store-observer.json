@@ -1,0 +1,16 @@
+{
+  "ID": "thanos-store-observer-dev:10901",
+  "Name": "thanos-store-gateway",
+  "Address": "10.103.70.126",
+  "Port": 10901,
+  "Meta": {
+    "prometheus": "true",
+    "cluster": "observer",
+    "environment": "dev"
+  },
+  "Check": {
+    "http": "http://10.104.202.162:9090/-/ready",
+    "interval": "10s",
+    "timeout": "5s"
+  }
+}

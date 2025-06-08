@@ -1,0 +1,17 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: consul-template-config-map
+data:
+  thanos-sd-file.tpl: |
+    {{- range services }}
+      {{- range service .Name }}
+        {{- if and (eq .ServiceMeta.prometheus "true") (eq .ServiceMeta.cluster "observer") (eq .ServiceMeta.environment "dev") }}
+        - targets: ["{{ .Address }}:{{ .Port }}"]
+          labels:
+            prometheus: "{{ .ServiceMeta.prometheus }}"
+            cluster: "{{ .ServiceMeta.cluster }}"
+            environment: "{{ .ServiceMeta.environment }}"
+        {{- end }}
+      {{- end }}
+    {{- end }}
