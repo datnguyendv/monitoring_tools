@@ -1,0 +1,16 @@
+{
+  "ID": "hostname:port",
+  "Name": "service name",
+  "Address": "hostname.service.IP",
+  "Port": "servicePort",
+  "Meta": {
+    "hostname": "hostname",
+    "cluster": "cluster_name",
+    "prometheus": "true"
+  },
+  "Check": {
+    "http": "api health check",
+    "interval": "10s",
+    "timeout": "5s"
+  }
+}
