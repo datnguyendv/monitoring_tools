@@ -20,16 +20,14 @@ prometheus:
     externalLabels:
       cluster: singapore
 
-    thanos:
-      image: quay.io/thanos/thanos:v0.38.0
-      #
-      # Enable if use bucket
-      objectStorageConfig:
-        existingSecret:
-          name: thanos-objstore-config
-          key: objstore.yml
-
-      grpcServerTlsConfig: {}   # nếu không dùng TLS
+    remoteWrite:
+      - url: http://thanos-receive.monitoring.svc.cluster.local:19291/api/v1/receive
+        name: thanos-receive
+        # optional but recommended
+        writeRelabelConfigs:
+          - sourceLabels: [__name__]
+            regex: ".*"
+            action: keep
 
     storageSpec:
       volumeClaimTemplate:
@@ -41,3 +39,4 @@ prometheus:
 
 alertmanager:
   enabled: false
+

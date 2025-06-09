@@ -1,0 +1,74 @@
+serviceAccount:
+  create: true
+
+networkPolicy:
+  enabled: false
+
+existingObjstoreSecret: thanos-objstore-config
+existingObjstoreSecretItems:
+  - key: objstore.yml
+    path: objstore.yml
+
+query:
+  enabled: true
+  replicaLabel: cluster
+  stores:
+    - thanos-storegateway.observability.svc.cluster.local:10901
+    - thanos-receive.monitoring.svc.cluster.local:10901
+
+  grpcServer:
+    service:
+      type: ClusterIP
+
+  httpServer:
+    service:
+      type: ClusterIP
+
+receive:
+  enabled: true
+  mode: standalone
+  replicaCount: 1
+  tsdbRetention: 2d
+  ingress:
+    enabled: false
+
+  service:
+    type: ClusterIP
+    httpPort: 19291
+    grpcPort: 10901
+
+  resources:
+    requests:
+      cpu: 300m
+      memory: 1Gi
+    limits:
+      cpu: 600m
+      memory: 2Gi
+
+queryFrontend:
+  enabled: true
+
+storegateway:
+  enabled: true
+  resources:
+    requests:
+      cpu: 300m
+      memory: 1Gi
+    limits:
+      cpu: 600m
+      memory: 2Gi
+
+compactor:
+  enabled: true
+  retention:
+    resolutionRaw: 5d
+    resolution5m: 30d
+    resolution1h: 90d
+
+  resources:
+    requests:
+      cpu: 300m
+      memory: 1Gi
+    limits:
+      cpu: 600m
+      memory: 2Gi
