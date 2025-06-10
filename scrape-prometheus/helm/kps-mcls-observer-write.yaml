@@ -1,0 +1,56 @@
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+
+    retention: 2d
+
+    externalLabels:
+      cluster: obserbility
+
+    remoteWrite:
+      - url: http://thanos-receive.monitoring.svc.cluster.local:19291/api/v1/receive
+        name: thanos-receive
+        # optional but recommended
+        writeRelabelConfigs:
+          - sourceLabels: [__name__]
+            regex: ".*"
+            action: keep
+
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 2Gi
+
+alertmanager:
+  enabled: false
+
+grafana:
+  enabled: false  # false if install in monitored cluster
+  adminPassword: "admin"
+  service:
+    type: NodePort  # Or LoadBalancer if need to expose to internet
+  persistence:
+    enabled: true
+    storageClassName: standard  # hoặc storageClass phù hợp với cluster bạn
+    accessModes:
+      - ReadWriteOnce
+    size: 5Gi
+    finalizers:
+      - kubernetes.io/pvc-protection
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard # Label của ConfigMap chứa dashboard
+      searchNamespace: monitoring # Namespace tìm kiếm dashboard
+      path: /etc/grafana/provisioning/dashboards
+
+    datasources:
+      enabled: true
+      label: grafana_datasource # Label của ConfigMap chứa datasource
+      searchNamespace: monitoring # Namespace tìm kiếm datasource
+      path: /etc/grafana/provisioning/datasources
